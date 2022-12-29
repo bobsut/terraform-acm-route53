@@ -21,7 +21,7 @@ resource "aws_route53_zone" "subzone" {
 
 resource "aws_route53_record" "glue" {
   zone_id         = aws_route53_zone.zone.zone_id
-  name            = format("%s.", aws_route53_zone.subzone.name)
+  name            = aws_route53_zone.subzone.name
   type            = "NS"
   ttl             = 900
   records         = aws_route53_zone.subzone.name_servers
