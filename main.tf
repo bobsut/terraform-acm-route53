@@ -50,7 +50,7 @@ module "stardotfqdn" {
   zone_id = aws_route53_zone.zone.zone_id
   depends_on = [
     aws_route53_zone.zone,
-    aws_route53_zone.subzone
+    # aws_route53_zone.subzone
   ]
   wait_for_validation = true
 }
