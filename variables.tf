@@ -4,10 +4,24 @@ variable "domain" {
   type        = string
 }
 
-variable "subdomain" {
+variable "subdomain1" {
   default     = "demo"
-  description = "Subdomain"
+  description = "Subdomain 1"
   type        = string
+}
+
+variable "subdomain2" {
+  default     = "omed"
+  description = "Subdomain 2"
+  type        = string
+}
+
+data "aws_regions" "all" {
+  all_regions = true
+  filter {
+    name   = "opt-in-status"
+    values = ["opted-in", "opt-in-not-required"]
+  }
 }
 
 variable "region" {
@@ -16,7 +30,13 @@ variable "region" {
   type        = string
   validation {
     condition = contains(
-      # aws ec2 describe-regions --query "Regions[].RegionName|sort(@)"
+      # we can't use derived value in condition
+      # data.aws_regions.all.names
+      #
+      # instead we use cli output
+      # aws ec2 describe-regions --all-regions \
+      # --filter Name="opt-in-status",Values="opted-in","opt-in-not-required" \
+      # --query "Regions[].RegionName|sort(@)"
       [
         "af-south-1",
         "ap-east-1",
@@ -45,5 +65,21 @@ variable "region" {
       ]
     , var.region)
     error_message = "You can't deploy in region ${var.region}."
+  }
+}
+
+variable "access_key" {
+  type = map(string)
+  default = {
+    acct1 = null
+    acct2 = null
+  }
+}
+
+variable "secret_key" {
+  type = map(string)
+  default = {
+    acct1 = null
+    acct2 = null
   }
 }
